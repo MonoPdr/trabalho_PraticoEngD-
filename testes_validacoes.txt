@@ -1,0 +1,94 @@
+
+#APLICAR VALIDAÇÕES (rodar uma vez, no arquivo validacoes_mongo.py)
+if __name__ == "__main__":
+    aplicar_validacao_cursos()
+    aplicar_validacao_estudantes()
+    aplicar_indices_unicos_estudantes()
+    aplicar_validacao_vinculos()
+
+
+#===================== TESTES DE VALIDAÇÃO - CURSOS =====================
+#(rodar no crud_mongo.py, depois de aplicar a validação)
+
+if __name__ == "__main__":
+    print("--- Teste 1: turno inválido (deve FALHAR) ---")
+    criar_curso(idCurso=99, nome="Curso Inválido", grau="Bacharelado",
+                turno="Turno Que Não Existe", campus="Teste", nivel="Graduação")
+
+    print("--- Teste 2: nome ausente (deve FALHAR) ---")
+    criar_curso(idCurso=98, nome=None, grau="Bacharelado",
+                turno="Matutino", campus="Teste", nivel="Graduação")
+
+    print("--- Teste 3: dados válidos (deve FUNCIONAR) ---")
+    criar_curso(idCurso=2, nome="Engenharia de Software", grau="Bacharelado",
+                turno="Vespertino", campus="São Cristóvão", nivel="Graduação")
+
+    print("--- Cursos existentes ---")
+    listar_cursos()
+
+
+#===================== TESTES DE VALIDAÇÃO - ESTUDANTES ($jsonSchema) =====================
+
+if __name__ == "__main__":
+    print("--- Teste 1: nome ausente (deve FALHAR) ---")
+    criar_estudante(mat_estudante="E9998", cpf="00000000000", nome=None,
+                     data_nascimento="2000-01-01", email=[], telefone=[],
+                     login="teste1", senha="123", mc=8, ano_ingresso=2023)
+
+    print("--- Teste 2: mc fora do intervalo (deve FALHAR) ---")
+    criar_estudante(mat_estudante="E9997", cpf="00000000002", nome="Teste MC",
+                     data_nascimento="2000-01-01", email=[], telefone=[],
+                     login="teste2", senha="123", mc=15, ano_ingresso=2023)
+
+    print("--- Teste 3: dados válidos (deve FUNCIONAR) ---")
+    criar_estudante(mat_estudante="E9996", cpf="00000000003", nome="Teste Válido",
+                     data_nascimento="2000-01-01", email=[], telefone=[],
+                     login="teste3", senha="123", mc=8, ano_ingresso=2023)
+
+    print("--- Estudantes existentes ---")
+    listar_estudantes()
+
+    # Remover o estudante de teste criado com sucesso
+    deletar_estudante("E9996")
+
+
+#===================== TESTES DE ÍNDICE ÚNICO - ESTUDANTES (cpf, login) =====================
+
+if __name__ == "__main__":
+    print("--- Teste: CPF duplicado (deve FALHAR) ---")
+    criar_estudante(mat_estudante="E0002", cpf="12345678901", nome="Outro Estudante",
+                     data_nascimento="2001-01-01", email=[], telefone=[],
+                     login="outro.login", senha="123", mc=7, ano_ingresso=2023)
+
+    print("--- Teste: login duplicado (deve FALHAR) ---")
+    criar_estudante(mat_estudante="E0003", cpf="99988877766", nome="Mais Um",
+                     data_nascimento="2001-01-01", email=[], telefone=[],
+                     login="ana.silva", senha="123", mc=7, ano_ingresso=2023)
+
+
+#===================== TESTES DE VALIDAÇÃO - VINCULOS ($jsonSchema, status ENUM) =====================
+
+if __name__ == "__main__":
+    print("--- Teste: status inválido (deve FALHAR) ---")
+    criar_vinculo(mat_estudante="E0001", curso_id=1, data_entrada="2023-01-01", status="Trancado")
+
+    print("--- Teste: status válido (deve FUNCIONAR) ---")
+    criar_vinculo(mat_estudante="E0001", curso_id=1, data_entrada="2023-01-01", status="Ativo")
+
+    listar_vinculos()
+
+
+#===================== TESTES DE INTEGRIDADE REFERENCIAL MANUAL - VINCULOS =====================
+#(checagem feita no código, dentro da própria função criar_vinculo, já que o MongoDB
+# não garante integridade referencial nativamente entre coleções)
+
+if __name__ == "__main__":
+    print("--- Teste: matrícula inexistente (deve FALHAR) ---")
+    criar_vinculo(mat_estudante="E9999", curso_id=1, data_entrada="2023-01-01", status="Ativo")
+
+    print("--- Teste: curso inexistente (deve FALHAR) ---")
+    criar_vinculo(mat_estudante="E0001", curso_id=999, data_entrada="2023-01-01", status="Ativo")
+
+    print("--- Teste: tudo válido (deve FUNCIONAR) ---")
+    criar_vinculo(mat_estudante="E0001", curso_id=2, data_entrada="2023-01-01", status="Ativo")
+

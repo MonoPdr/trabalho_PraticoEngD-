@@ -1,0 +1,86 @@
+
+#TESTE DE CONEXAO COM O MONGO
+if __name__ == "__main__":
+    try:
+        banco = conectar_mongo()
+        print("Conexão bem-sucedida!")
+        print("Coleções existentes:", banco.list_collection_names())
+    except Exception as e:
+        print(f"Erro ao conectar: {e}")
+
+
+
+#CRIAR ESTUDANTE
+if __name__ == "__main__":
+    criar_estudante(
+        mat_estudante="E0001",
+        cpf="12345678901",
+        nome="Ana Silva",
+        data_nascimento="2000-05-10",
+        email=["ana.silva@email.com"],
+        telefone=["79988887777"],
+        login="ana.silva",
+        senha="senha123",
+        mc=9,
+        ano_ingresso=2023
+    )
+    print("Coleções existentes:", conectar_mongo().list_collection_names())
+
+
+#LISTAR E BUSCAR ESTUDANTE
+    if __name__ == "__main__":
+    print("--- Todos os estudantes ---")
+    listar_estudantes()
+
+    print("--- Busca por matrícula ---")
+    buscar_estudante_por_matricula("E0001")
+
+
+#ATUALIZAR ESTUDANTE
+if __name__ == "__main__":
+    atualizar_estudante("E0001", cpf="12345678901")
+    buscar_estudante_por_matricula("E0001")
+
+
+
+#----------------------- CURSOS
+if __name__ == "__main__":
+    criar_curso(
+        idCurso=1,
+        nome="Ciência da Computação",
+        grau="Bacharelado",
+        turno="Matutino",
+        campus="Cidade Universitária Prof. José Aloísio de Campos",
+        nivel="Graduação"
+    )
+
+    print("--- Todos os cursos ---")
+    listar_cursos()
+
+    print("--- Busca por ID ---")
+    buscar_curso_por_id(1)
+
+    print("--- Atualizando curso ---")
+    atualizar_curso(1, turno="Integral")
+    buscar_curso_por_id(1)
+
+    print("--- Testando busca/delete com ID inexistente ---")
+    buscar_curso_por_id(999)
+    deletar_curso(999)
+
+
+
+#----------------VINCULO
+if __name__ == "__main__":
+    id_gerado = "6a54e93eca7b8cbd058df298"
+
+    print("--- Busca por ID ---")
+    buscar_vinculo(id_gerado)
+
+    print("--- Atualizando status ---")
+    atualizar_vinculo(id_gerado, status="Formando")
+    buscar_vinculo(id_gerado)
+
+    print("--- Testando delete ---")
+    deletar_vinculo(id_gerado)
+    listar_vinculos()

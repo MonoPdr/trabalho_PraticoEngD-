@@ -1,0 +1,167 @@
+#TESTE DE CONEXAO COM O POSTGRES
+if __name__ == "__main__":
+    try:
+        conn = conectar()
+        print("Conexão bem-sucedida!")
+        conn.close()
+    except Exception as e:
+        print(f"Erro ao conectar: {e}")
+
+
+#CRIAR USUARIO
+if __name__ == "__main__":
+    criar_usuario(
+        cpf=12345678901,
+        nome="Ana Silva",
+        data_nascimento="2000-05-10",
+        email=["ana.silva@email.com"],
+        telefone=["79999999999"],
+        login="ana.silva",
+        senha="senha123"
+    )
+
+
+#LISTAR E BUSCAR USUARIO
+if __name__ == "__main__":
+    print("--- Todos os usuários ---")
+    listar_usuarios()
+
+    print("--- Busca por CPF ---")
+    buscar_usuario_por_cpf(12345678901)
+
+
+#ATUALIZAR USUARIO
+if __name__ == "__main__":
+    atualizar_usuario(cpf=12345678901, telefone=["79988887777"])
+    buscar_usuario_por_cpf(12345678901)
+
+
+#DELETAR USUARIO
+if __name__ == "__main__":
+    # Teste 1: CPF que não existe
+    deletar_usuario(99999999999)
+
+    # Teste 2: criar um usuário descartável e deletar de verdade
+    criar_usuario(
+        cpf=11122233344,
+        nome="Usuário Teste",
+        data_nascimento="1999-01-01",
+        email=["teste@email.com"],
+        telefone=["79900001111"],
+        login="teste.delete",
+        senha="123456"
+    )
+    deletar_usuario(11122233344)
+    listar_usuarios()
+
+
+#----------------------- CURSO
+if __name__ == "__main__":
+    criar_curso(
+        nome="Ciência da Computação",
+        grau="Bacharelado",
+        turno="Matutino",
+        campus="São Cristóvão",
+        nivel="Graduação"
+    )
+
+    print("--- Todos os cursos ---")
+    listar_cursos()
+
+
+#BUSCA, UPDATE E DELETE DE CURSO
+if __name__ == "__main__":
+    print("--- Busca por ID ---")
+    buscar_curso_por_id(1)
+
+    print("--- Atualizando curso ---")
+    atualizar_curso(1, campus="Cidade Universitária Prof. José Aloísio de Campos")
+    buscar_curso_por_id(1)
+
+    print("--- Testando delete com ID inexistente ---")
+    deletar_curso(999)
+
+    print("--- Criando e deletando um curso descartável ---")
+    criar_curso(
+        nome="Curso Teste",
+        grau="Bacharelado",
+        turno="Noturno",
+        campus="Campus Teste",
+        nivel="Graduação"
+    )
+    listar_cursos()
+
+if __name__ == "__main__":
+    deletar_curso(2)
+    listar_cursos()
+
+
+#----------------------- ESTUDANTE
+if __name__ == "__main__":
+    # Ana Silva já existe em usuario com cpf 12345678901
+    criar_estudante(
+        mat_estudante="E0001",
+        cpf=12345678901,
+        mc=8,
+        ano_ingresso=2023
+    )
+
+    print("--- Todos os estudantes ---")
+    listar_estudantes()
+
+    print("--- Testando FK: CPF que não existe ---")
+    criar_estudante(
+        mat_estudante="E0002",
+        cpf=99999999999,
+        mc=7,
+        ano_ingresso=2023
+    )
+
+
+#BUSCA, UPDATE E DELETE DE ESTUDANTE
+if __name__ == "__main__":
+    print("--- Busca por matrícula ---")
+    buscar_estudante_por_matricula("E0001")
+
+    print("--- Atualizando estudante ---")
+    atualizar_estudante("E0001", mc=9)
+    buscar_estudante_por_matricula("E0001")
+
+    print("--- Testando delete com matrícula inexistente ---")
+    deletar_estudante("E9999")
+
+
+#----------------------- VINCULO
+if __name__ == "__main__":
+    # Cria o vínculo: Ana Silva (E0001) no curso Ciência da Computação (idcurso=1)
+    criar_vinculo(
+        mat_estudante="E0001",
+        curso=1,
+        data_entrada="2023-03-01",
+        status="Ativo"
+    )
+
+    print("--- Todos os vínculos ---")
+    listar_vinculos()
+
+    print("--- Busca por ID ---")
+    buscar_vinculo_por_id(1)
+
+    print("--- Atualizando status ---")
+    atualizar_vinculo(1, status="Formando")
+    buscar_vinculo_por_id(1)
+
+    print("--- Testando FK: matrícula inexistente ---")
+    criar_vinculo(
+        mat_estudante="E9999",
+        curso=1,
+        data_entrada="2023-03-01",
+        status="Ativo"
+    )
+
+
+#DELETAR VINCULO
+if __name__ == "__main__":
+    deletar_vinculo(999)      # não existe, deve avisar
+    deletar_vinculo(1)        # existe, deve remover
+    listar_vinculos()
